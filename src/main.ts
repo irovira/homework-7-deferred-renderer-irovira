@@ -120,7 +120,7 @@ function main() {
 
     // TODO: pass any arguments you may need for shader passes
     // forward render mesh info into gbuffers
-    renderer.renderToGBuffer(camera, standardDeferred, [mesh0, mesh1,]);
+    renderer.renderToGBuffer(camera, standardDeferred, [mesh0,]);
     // render from gbuffers into 32-bit color buffer
     renderer.renderFromGBuffer(camera);
     // apply 32-bit post and tonemap from 32-bit color to 8-bit color
