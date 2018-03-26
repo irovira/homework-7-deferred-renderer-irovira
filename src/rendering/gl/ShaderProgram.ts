@@ -1,4 +1,4 @@
-import {vec4, mat4} from 'gl-matrix';
+import {vec4, vec3, mat4} from 'gl-matrix';
 import Drawable from './Drawable';
 import Texture from './Texture';
 import {gl} from '../../globals';
@@ -34,6 +34,9 @@ class ShaderProgram {
   unifProj: WebGLUniformLocation;
   unifColor: WebGLUniformLocation;
   unifTime: WebGLUniformLocation;
+  unifCameraPosition: WebGLUniformLocation;
+  // unifCameraUp: WebGLUniformLocation;
+  // unifCameraLook: WebGLUniformLocation;
 
   unifTexUnits: Map<string, WebGLUniformLocation>;
 
@@ -58,7 +61,12 @@ class ShaderProgram {
     this.unifView = gl.getUniformLocation(this.prog, "u_View");
     this.unifProj = gl.getUniformLocation(this.prog, "u_Proj");
     this.unifColor = gl.getUniformLocation(this.prog, "u_Color");
-    this.unifTime = gl.getUniformLocation(this.prog, "u_Time")
+    this.unifTime = gl.getUniformLocation(this.prog, "u_Time");
+
+    this.unifCameraPosition = gl.getUniformLocation(this.prog, "u_CamPos");
+    // this.unifCameraUp = gl.getUniformLocation(this.prog, "u_CameraUp");
+    // this.unifCameraLook = gl.getUniformLocation(this.prog, "u_CameraLook");
+
 
     this.unifTexUnits = new Map<string, WebGLUniformLocation>();
   }
@@ -142,6 +150,26 @@ class ShaderProgram {
       gl.uniform1f(this.unifTime, t);
     }
   }
+
+  setCamera(position:vec3){
+    this.use();
+    if (this.unifCameraPosition!== -1) {
+      gl.uniform3fv(this.unifCameraPosition, position);
+    }
+  }
+
+  // setCamera(position:vec3, up:vec3, direction:vec3){
+  //   this.use();
+  //   if (this.unifCameraPosition!== -1) {
+  //     gl.uniform3fv(this.unifCameraPosition, position);
+  //   }
+  //   if (this.unifCameraUp!== -1) {
+  //     gl.uniform3fv(this.unifCameraUp, up);
+  //   }
+  //   if (this.unifCameraLook!== -1) {
+  //     gl.uniform3fv(this.unifCameraLook, direction);
+  //   }
+  // }
 
   draw(d: Drawable) {
     this.use();

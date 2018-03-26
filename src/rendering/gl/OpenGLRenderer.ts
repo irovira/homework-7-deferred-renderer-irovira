@@ -9,16 +9,13 @@ import Square from '../../geometry/Square';
 
 class OpenGLRenderer {
   gBuffer: WebGLFramebuffer; // framebuffer for deferred rendering
-
   gbTargets: WebGLTexture[]; // references to different 4-channel outputs of the gbuffer
                              // Note that the constructor of OpenGLRenderer initializes
                              // gbTargets[0] to store 32-bit values, while the rest
                              // of the array stores 8-bit values. You can modify
                              // this if you want more 32-bit storage.
-
   depthTexture: WebGLTexture; // You don't need to interact with this, it's just
                               // so the OpenGL pipeline can do depth sorting
-
   // post-processing buffers pre-tonemapping (32-bit color)
   post32Buffers: WebGLFramebuffer[];
   post32Targets: WebGLTexture[];
@@ -32,7 +29,6 @@ class OpenGLRenderer {
   post32Passes: PostProcess[];
 
   currentTime: number; // timer number to apply to all drawing shaders
-
   // the shader that renders from the gbuffers into the postbuffers
   deferredShader :  PostProcess = new PostProcess(
     new Shader(gl.FRAGMENT_SHADER, require('../../shaders/deferred-render.glsl'))
@@ -66,10 +62,12 @@ class OpenGLRenderer {
     this.post32Passes = [];
 
     // TODO: these are placeholder post shaders, replace them with something good
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost-frag.glsl'))));
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost2-frag.glsl'))));
+    // this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost-frag.glsl'))));
+    //this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost2-frag.glsl'))));
 
-    this.add32BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost3-frag.glsl'))));
+    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/dof-frag.glsl'))));
+
+    // this.add32BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost3-frag.glsl'))));
 
     if (!gl.getExtension("OES_texture_float_linear")) {
       console.error("OES_texture_float_linear not available");
@@ -227,6 +225,8 @@ class OpenGLRenderer {
     gbProg.setViewMatrix(view);
     gbProg.setProjMatrix(proj);
 
+    gbProg.setCamera(camera.position);
+
     gbProg.setTime(this.currentTime);
 
     for (let drawable of drawables) {
@@ -307,7 +307,6 @@ class OpenGLRenderer {
 
     gl.activeTexture(gl.TEXTURE0);
     // bound texture is the last one processed before
-
     gl.bindTexture(gl.TEXTURE_2D, this.post32Targets[Math.max(0, i) % 2]);
 
     this.tonemapPass.draw();

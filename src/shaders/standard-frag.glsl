@@ -6,6 +6,7 @@ in vec4 fs_Nor;
 in vec4 fs_Col;
 in vec2 fs_UV;
 
+
 out vec4 fragColor[3]; // The data in the ith index of this array of outputs
                        // is passed to the ith index of OpenGLRenderer's
                        // gbTargets array, which is an array of textures.
@@ -26,7 +27,8 @@ void main() {
     // if using textures, inverse gamma correct
     col = pow(col, vec3(2.2));
 
-    fragColor[0] = vec4(0.0);
-    fragColor[1] = vec4(0.0);
+
+    fragColor[0] = vec4(fs_Nor.xyz,fs_Pos.z); //pass depth to first buffer?
+    fragColor[1] = vec4(0.0); //pass normals to second buffer
     fragColor[2] = vec4(col, 1.0);
 }
