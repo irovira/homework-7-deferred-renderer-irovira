@@ -20,9 +20,12 @@ let square: Square;
 // TODO: replace with your scene's stuff
 
 let obj0: string;
+let obj1: string;
 let mesh0: Mesh;
+let mesh1: Mesh;
 
 let tex0: Texture;
+let tex1: Texture;
 
 
 var timer = {
@@ -39,13 +42,15 @@ var timer = {
 
 
 function loadOBJText() {
-  obj0 = readTextFile('../resources/obj/wahoo.obj')
+  obj0 = readTextFile('../resources/obj/wahoo.obj');
+  obj1= readTextFile('../resources/obj/wahoo.obj');
 }
 
 
 function loadScene() {
   square && square.destroy();
   mesh0 && mesh0.destroy();
+  mesh1 && mesh1.destroy();
 
   square = new Square(vec3.fromValues(0, 0, 0));
   square.create();
@@ -53,7 +58,11 @@ function loadScene() {
   mesh0 = new Mesh(obj0, vec3.fromValues(0, 0, 0));
   mesh0.create();
 
-  tex0 = new Texture('../resources/textures/wahoo.bmp')
+  mesh1 = new Mesh(obj1, vec3.fromValues(2, 0, 0));
+  mesh1.create();
+
+  tex0 = new Texture('../resources/textures/wahoo.bmp');
+  tex1 = new Texture('../resources/textures/wahoo.bmp');
 }
 
 
@@ -94,6 +103,7 @@ function main() {
     ]);
 
   standardDeferred.setupTexUnits(["tex_Color"]);
+  standardDeferred.setupTexUnits(["tex_Color2"]);
 
   function tick() {
     camera.update();
@@ -103,13 +113,14 @@ function main() {
     renderer.updateTime(timer.deltaTime, timer.currentTime);
 
     standardDeferred.bindTexToUnit("tex_Color", tex0, 0);
+    standardDeferred.bindTexToUnit("tex_Color2", tex1, 1);
 
     renderer.clear();
     renderer.clearGB();
 
     // TODO: pass any arguments you may need for shader passes
     // forward render mesh info into gbuffers
-    renderer.renderToGBuffer(camera, standardDeferred, [mesh0]);
+    renderer.renderToGBuffer(camera, standardDeferred, [mesh0, mesh1,]);
     // render from gbuffers into 32-bit color buffer
     renderer.renderFromGBuffer(camera);
     // apply 32-bit post and tonemap from 32-bit color to 8-bit color

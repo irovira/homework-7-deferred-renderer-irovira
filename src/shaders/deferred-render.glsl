@@ -49,7 +49,7 @@ void main() {
 
 	vec3 lightVec = lightPos - p;
 
-	float diffuseTerm = dot(normalize(nor), normalize(lightVec));
+	float diffuseTerm = clamp(dot(normalize(nor), normalize(lightVec)), 0.0, 1.0);
 
 	float ambientTerm = 0.1;
 
