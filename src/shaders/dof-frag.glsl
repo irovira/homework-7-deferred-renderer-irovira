@@ -11,7 +11,7 @@ uniform float u_Time;
 uniform vec2 u_Size;
 uniform vec3 u_CamPos;
 
-const float focus = 0.0f;
+const float focus = 5.0f;
 
 const float maxDist = 20.0f;
 
@@ -41,5 +41,5 @@ void main() {
   color += texture(u_frame, fs_UV - (off3 / resolution)).xyz * 0.010381362401148057;
 
   vec3 res = originalColor * (1.0-t) + color * t;
-  out_Col = vec4(res, 1.0f);//vec4(texture(u_frame, fs_UV).xyz,1.0);
+  out_Col = vec4(res, 1.0f);
 }

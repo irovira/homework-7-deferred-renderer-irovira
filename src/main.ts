@@ -106,7 +106,7 @@ function main() {
   standardDeferred.setupTexUnits(["tex_Color2"]);
 
   function tick() {
-    
+    renderer.storePrev(camera,standardDeferred);
     camera.update();
     
     stats.begin();
@@ -128,7 +128,7 @@ function main() {
     
     // render from gbuffers into 32-bit color buffer
     renderer.renderFromGBuffer(camera);
-    renderer.storePrev(camera,standardDeferred);
+    
     
     // apply 32-bit post and tonemap from 32-bit color to 8-bit color
     renderer.renderPostProcessHDR();
