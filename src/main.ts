@@ -106,11 +106,15 @@ function main() {
   standardDeferred.setupTexUnits(["tex_Color2"]);
 
   function tick() {
+    
     camera.update();
+    
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+    
     timer.updateTime();
     renderer.updateTime(timer.deltaTime, timer.currentTime);
+    standardDeferred.setTime(timer.currentTime);
 
     standardDeferred.bindTexToUnit("tex_Color", tex0, 0);
     //standardDeferred.bindTexToUnit("tex_Color2", tex1, 1);
@@ -120,13 +124,18 @@ function main() {
 
     // TODO: pass any arguments you may need for shader passes
     // forward render mesh info into gbuffers
-    renderer.renderToGBuffer(camera, standardDeferred, [mesh0,]);
+    renderer.renderToGBuffer(camera, standardDeferred, [mesh0]);
+    
     // render from gbuffers into 32-bit color buffer
     renderer.renderFromGBuffer(camera);
+    renderer.storePrev(camera,standardDeferred);
+    
     // apply 32-bit post and tonemap from 32-bit color to 8-bit color
     renderer.renderPostProcessHDR();
+    
     // apply 8-bit post and draw
-    renderer.renderPostProcessLDR();
+    renderer.renderPostProcessLDR(camera);
+    
 
     stats.end();
     requestAnimationFrame(tick);

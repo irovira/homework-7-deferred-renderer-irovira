@@ -32,9 +32,8 @@ void main() {
     //then apply the ray casting algorithm found on page 18 of these slides to 
     //project the point into camera space 
 
-    float ndc_x = (fs_UV.x - 0.5f) * 2.0f;// * 2.0f) - 1.0f;
-    float ndc_y = (fs_UV.y- 0.5f) * 2.0f;// * 2.0f) - 1.0f;
-
+    float ndc_x = (fs_UV.x - 0.5f) * 2.0f;
+    float ndc_y = (fs_UV.y- 0.5f) * 2.0f;
 	
     //get vectors from view matrix
 	vec3 cPos = vec3(u_CamPos);
@@ -46,7 +45,6 @@ void main() {
     vec3 h = vec3(1,0,0) * len * tan(a); //aspect = 1;
 
     vec3 p = ref + (ndc_x * h) + (ndc_y * v);
-
 	vec3 lightVec = lightPos - p;
 
 	float diffuseTerm = clamp(dot(normalize(nor), normalize(lightVec)), 0.0, 1.0);

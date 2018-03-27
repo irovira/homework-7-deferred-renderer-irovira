@@ -64,9 +64,10 @@ class OpenGLRenderer {
     // TODO: these are placeholder post shaders, replace them with something good
     // this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost-frag.glsl'))));
     //this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost2-frag.glsl'))));
-
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/dof-frag.glsl'))));
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/hatch-frag.glsl'))));
+    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/motionblur-frag.glsl'))));
+    // this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/dof-frag.glsl'))));
+    // this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/hatch-frag.glsl'))));
+    
 
     // this.add32BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost3-frag.glsl'))));
 
@@ -81,6 +82,7 @@ class OpenGLRenderer {
     var gb0loc = gl.getUniformLocation(this.deferredShader.prog, "u_gb0");
     var gb1loc = gl.getUniformLocation(this.deferredShader.prog, "u_gb1");
     var gb2loc = gl.getUniformLocation(this.deferredShader.prog, "u_gb2");
+    
 
     this.deferredShader.use();
     gl.uniform1i(gb0loc, 0);
@@ -210,6 +212,13 @@ class OpenGLRenderer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  storePrev(camera: Camera, gbProg: ShaderProgram){
+    let viewProj = mat4.create();
+    let view = camera.viewMatrix;
+    let proj = camera.projectionMatrix;
+    mat4.multiply(viewProj, camera.projectionMatrix, camera.viewMatrix);
+    gbProg.setPreviousVPMat(viewProj);
+  }
 
   renderToGBuffer(camera: Camera, gbProg: ShaderProgram, drawables: Array<Drawable>) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.gBuffer);
@@ -320,15 +329,16 @@ class OpenGLRenderer {
 
 
   // TODO: pass any info you need as args
-  renderPostProcessLDR() {
+  renderPostProcessLDR(camera: Camera) {
     // TODO: replace this with your post 8-bit pipeline
     // the loop shows how to swap between frame buffers and textures given a list of processes,
     // but specific shaders (e.g. motion blur) need specific info as textures
     for (let i = 0; i < this.post8Passes.length; i++){
       // pingpong framebuffers for each pass
       // if this is the last pass, default is bound
-      if (i < this.post8Passes.length - 1) gl.bindFramebuffer(gl.FRAMEBUFFER, this.post8Buffers[(i + 1) % 2]);
-      else gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      // if (i < this.post8Passes.length - 1) gl.bindFramebuffer(gl.FRAMEBUFFER, this.post8Buffers[(i + 1) % 2]);
+      // else gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       gl.disable(gl.DEPTH_TEST);
@@ -336,12 +346,16 @@ class OpenGLRenderer {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.post8Targets[(i) % 2]);
+      gl.bindTexture(gl.TEXTURE_2D, this.post8Targets[0]);
+      
+      gl.activeTexture(gl.TEXTURE0+1);
+      gl.bindTexture(gl.TEXTURE_2D, this.gbTargets[1]);
 
       this.post8Passes[i].draw();
 
       // bind default
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      this.post8Passes[i].setCamera(camera.position);
     }
   }
 

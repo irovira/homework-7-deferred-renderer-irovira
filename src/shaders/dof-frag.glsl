@@ -8,15 +8,17 @@ out vec4 out_Col;
 
 uniform sampler2D u_frame;
 uniform float u_Time;
+uniform vec2 u_Size;
+uniform vec3 u_CamPos;
 
-const float focus = 10.0f;
+const float focus = 0.0f;
 
 const float maxDist = 20.0f;
 
 // Render R, G, and B channels individually
 void main() {
     vec4 test = fs_Pos;
-    float s = abs(focus - fs_Pos.z);
+    float s = abs(u_CamPos.z + 10.0 - fs_Pos.z);
     float t = clamp(s / maxDist, 0.0,1.0);
 
 //gaussian blur based on https://github.com/Jam3/glsl-fast-gaussian-blur/blob/master/13.glsl
