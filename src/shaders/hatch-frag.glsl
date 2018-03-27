@@ -10,7 +10,7 @@ uniform sampler2D u_frame;
 uniform float u_Time;
 uniform vec2 u_Size;
 
-const int radius = 7;
+const int radius = 5;
 
 //oil paint effect based on Kuwahara filter method, written up in GPU Pro 3
 //found here: https://www.reddit.com/r/shaders/comments/5e7026/help_making_an_oil_paint_post_processing_shader/

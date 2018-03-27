@@ -14,7 +14,7 @@ uniform sampler2D u_gb1;
 //uniform sampler2D u_gb2;
 //uniform sampler2D u_gb2;
 
-const int numSamples = 8;
+const int numSamples = 32;
 
 
 
@@ -33,4 +33,5 @@ void main() {
  
    result /= float(numSamples);
     out_Col = result;//vec4(blurVec,0.0,1.0);//vec4(result,0.0,1.0);
+
 }

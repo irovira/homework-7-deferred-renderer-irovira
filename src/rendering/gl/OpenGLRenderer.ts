@@ -216,8 +216,8 @@ class OpenGLRenderer {
     let viewProj = mat4.create();
     let view = camera.viewMatrix;
     let proj = camera.projectionMatrix;
-    mat4.multiply(viewProj, camera.projectionMatrix, camera.viewMatrix);
-    gbProg.setPreviousVPMat(viewProj);
+    //mat4.multiply(viewProj, camera.projectionMatrix, camera.viewMatrix);
+    gbProg.setPreviousVPMat(view);
   }
 
   renderToGBuffer(camera: Camera, gbProg: ShaderProgram, drawables: Array<Drawable>) {

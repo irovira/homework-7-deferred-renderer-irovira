@@ -27,9 +27,7 @@ void main()
     fs_UV = vs_UV;
     fs_UV.y = 1.0 - fs_UV.y;
     vec4 pos = vs_Pos;
-    pos.z -= sin(u_Time*2.0) * 20.0;
-    // pos.x += cos(u_Time*5.0) * 5.0;
-    // pos.y += sin(u_Time*5.0) * 5.0;
+
     // fragment info is in view space
     mat3 invTranspose = mat3(u_ModelInvTr);
     mat3 view = mat3(u_View);
@@ -53,12 +51,12 @@ void main()
 
 //     float4 P = mul(modelView, in.coord);
 // float4 Pprev = mul(prevModelView, in.prevCoord);
-      vec4 previous = u_PrevVPM * u_Model * pos;
-      previous.xyz /= previous.w;
+      vec4 previous = u_PrevVPM * u_Model * vs_Pos;
+      previous /= previous.w;
       //previous.xy = previous.xy * 0.5 + 0.5;
 
-      vec2 blurVec = (vs_UV- previous.xy)/ 2.0f;// - vs_UV;
-      fs_Blur = blurVec;
+      vec2 vel = vec2((fs_Pos- previous)/ 2.0f);// - vs_UV;
+      fs_Blur = vel;
 
 
     
