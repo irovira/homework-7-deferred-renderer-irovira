@@ -11,20 +11,20 @@ uniform float u_Time;
 uniform vec2 u_Size;
 uniform vec3 u_CamPos;
 
-const float focus = 5.0f;
+const float focus = 1.0f;
 
-const float maxDist = 20.0f;
+const float maxDist = 200.0f;
 
 // Render R, G, and B channels individually
 void main() {
     vec4 test = fs_Pos;
-    float s = abs(u_CamPos.z + 10.0 - fs_Pos.z);
+    float s = abs(u_CamPos.z - fs_Pos.z);
     float t = clamp(s / maxDist, 0.0,1.0);
 
 //gaussian blur based on https://github.com/Jam3/glsl-fast-gaussian-blur/blob/master/13.glsl
 
   vec2 direction = vec2(0,0) - vec2(fs_Pos);
-  vec2 resolution = vec2(400,200);//vec2(1400,700) * scale; //how should i apply scale
+  vec2 resolution = vec2(200,100);//vec2(1400,700) * scale; //how should i apply scale
 
   vec3 originalColor = texture(u_frame, fs_UV).xyz;
 
@@ -40,6 +40,6 @@ void main() {
   color += texture(u_frame, fs_UV + (off3 / resolution)).xyz * 0.010381362401148057;
   color += texture(u_frame, fs_UV - (off3 / resolution)).xyz * 0.010381362401148057;
 
-  vec3 res = originalColor * (1.0-t) + color * t;
+  vec3 res = originalColor * t + color * (1.0-t);
   out_Col = vec4(res, 1.0f);
 }

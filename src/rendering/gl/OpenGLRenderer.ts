@@ -26,6 +26,7 @@ class OpenGLRenderer {
 
   // post processing shader lists, try to limit the number for performance reasons
   post8Passes: PostProcess[];
+  post8PassesBool: boolean[];
   post32Passes: PostProcess[];
 
   currentTime: number; // timer number to apply to all drawing shaders
@@ -56,6 +57,7 @@ class OpenGLRenderer {
     this.post8Buffers = [undefined, undefined];
     this.post8Targets = [undefined, undefined];
     this.post8Passes = [];
+    this.post8PassesBool = [];
 
     this.post32Buffers = [undefined, undefined];
     this.post32Targets = [undefined, undefined];
@@ -66,9 +68,12 @@ class OpenGLRenderer {
     //this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost2-frag.glsl'))));
     
     this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/dof-frag.glsl'))));
-    
+    this.post8PassesBool[0] = true;
     this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/motionblur-frag.glsl'))));
+    this.post8PassesBool[1] = true;
     this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/hatch-frag.glsl'))));
+    this.post8PassesBool[2] = true;
+
 
     this.setPaint(5.0);
     
@@ -211,6 +216,29 @@ class OpenGLRenderer {
     // for (let pass of this.post32Passes) pass.setTime(currentTime);
     // this.currentTime = currentTime;
   }
+  setDepthProcess(b:boolean){
+    if(b){
+      this.post8PassesBool[0] = true;
+    } else {
+      this.post8PassesBool[0] = false;
+    }
+  }
+
+  setBlurProcess(b:boolean){
+    if(b){
+      this.post8PassesBool[1] = true;
+    } else {
+      this.post8PassesBool[1] = false;
+    }
+  }
+
+  setPaintProcess(b:boolean){
+    if(b){
+      this.post8PassesBool[2] = true;
+    } else {
+      this.post8PassesBool[2] = false;
+    }
+  }
 
 
   clear() {
@@ -346,28 +374,35 @@ class OpenGLRenderer {
     // the loop shows how to swap between frame buffers and textures given a list of processes,
     // but specific shaders (e.g. motion blur) need specific info as textures
     for (let i = 0; i < this.post8Passes.length; i++){
-      // pingpong framebuffers for each pass
-      // if this is the last pass, default is bound
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      // if (i < this.post8Passes.length - 1) gl.bindFramebuffer(gl.FRAMEBUFFER, this.post8Buffers[(i + 1) % 2]);
-      // else gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      if(this.post8PassesBool[i]){
+        // pingpong framebuffers for each pass
+        // if this is the last pass, default is bound
+        // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        if (i < this.post8Passes.length - 1) gl.bindFramebuffer(gl.FRAMEBUFFER, this.post8Buffers[(i + 1) % 2]);
+        else gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-      gl.disable(gl.DEPTH_TEST);
-      gl.enable(gl.BLEND);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        gl.disable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.post8Targets[0]);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.post8Targets[(i) % 2]);
+
+        if(i == 1){
+          gl.activeTexture(gl.TEXTURE0+2);
+          gl.bindTexture(gl.TEXTURE_2D, this.gbTargets[1]);
+        }
+        
+        
+
+        this.post8Passes[i].draw();
+
+        // bind default
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        this.post8Passes[i].setCamera(camera.position);
+      }
       
-      gl.activeTexture(gl.TEXTURE0+1);
-      gl.bindTexture(gl.TEXTURE_2D, this.gbTargets[1]);
-
-      this.post8Passes[i].draw();
-
-      // bind default
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      this.post8Passes[i].setCamera(camera.position);
     }
   }
 

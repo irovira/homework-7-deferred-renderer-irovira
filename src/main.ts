@@ -14,6 +14,10 @@ import Texture from './rendering/gl/Texture';
 const controls = {
   // Extra credit: Add interactivity
   painty: 5.0,
+  Depth: true,
+  Blur: true,
+  Paint: true,
+
 };
 
 let square: Square;
@@ -81,10 +85,27 @@ function main() {
   //increase number of samples for motion blur
   //increaase how painty the paint shader is
 
-  var paintControl = gui.add(controls, 'painty', 1, 10);
-  paintControl.onFinishChange(function() {
+  var paintSamplesControl = gui.add(controls, 'painty', 1, 10);
+  paintSamplesControl.onFinishChange(function() {
     // Fires on every change, drag, keypress, etc.
     renderer.setPaint(controls.painty);
+  });
+
+  var dofControl = gui.add(controls, 'Depth');
+  var blurControl = gui.add(controls, 'Blur');
+  var paintControl = gui.add(controls, 'Paint');
+
+  dofControl.onFinishChange(function() {
+    // Fires on every change, drag, keypress, etc.
+    renderer.setDepthProcess(controls.Depth);
+  });
+  blurControl.onFinishChange(function() {
+    // Fires on every change, drag, keypress, etc.
+    renderer.setBlurProcess(controls.Blur);
+  });
+  paintControl.onFinishChange(function() {
+    // Fires on every change, drag, keypress, etc.
+    renderer.setPaintProcess(controls.Paint);
   });
 
   // get canvas and webgl context
@@ -112,7 +133,7 @@ function main() {
     ]);
 
   standardDeferred.setupTexUnits(["tex_Color"]);
-  standardDeferred.setupTexUnits(["tex_Color2"]);
+  //standardDeferred.setupTexUnits(["tex_Color2"]);
 
   function tick() {
     renderer.storePrev(camera,standardDeferred);

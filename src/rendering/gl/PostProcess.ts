@@ -23,7 +23,7 @@ class PostProcess extends ShaderProgram {
 
 		// bind texture unit 0 to this location
 		gl.uniform1i(this.unifFrame, 0); // gl.TEXTURE0
-		gl.uniform1i(this.unifGBuffer1, 1); // gl.TEXTURE0+1
+		gl.uniform1i(this.unifGBuffer1, 2); // gl.TEXTURE0+2
 		if (PostProcess.screenQuad === undefined) {
 			PostProcess.screenQuad = new Square(vec3.fromValues(0, 0, 0));
 			PostProcess.screenQuad.create();
