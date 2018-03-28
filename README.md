@@ -1,20 +1,20 @@
 # irovira || Isabela Rovira || Project 7
 ## Post Process Effects
-* __Approximated depth of field
+* Approximated depth of field
 
 `dof-frag.glsl`: I combined a gaussian blur based off of [here](https://github.com/Jam3/glsl-fast-gaussian-blur/blob/master/13.glsl) and a scale factor that is based on the difference between the camera z position and the fragment z position. The scale controls the strength of the blur. This is the Depth toggle in the GUI.
 
-* __Motion Blur
+* Motion Blur
 
 `motionblur-frag.glsl`: I based the motion blur off a section of GPU Gems found [here](https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch27.html ). I calculate the blur vector based on the previous view matrix inside `standard-vert.glsl` and pass that via the u_gb1 buffer to this post process. This is the Blur toggle in the GUI.
 
-* __Paint Effect
+* Paint Effect
 
 `paint-frag.glsl`: This effect is based on the Kuwahara filter and was written up in GPU Pro 3 and was referenced from the book [here](https://www.reddit.com/r/shaders/comments/5e7026/help_making_an_oil_paint_post_processing_shader/ ). This is the Paint toggle in the GUI.
 
 ## Extra Credit Implemented
 
-* _Interactive GUI:
+* Interactive GUI:
 
 Painty is the parameter that controls the radius of samples used in `paint-frag.glsl`. The toggle turn the process on/off
 Note that because the paint post process is the final render, the frame will not render if it is not toggled. If you want to see plain lambert shading, toggle off Depth and Blur and set 'painty' to 1.
