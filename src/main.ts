@@ -11,9 +11,10 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 import Texture from './rendering/gl/Texture';
 
 // Define an object with application parameters and button callbacks
-// const controls = {
-//   // Extra credit: Add interactivity
-// };
+const controls = {
+  // Extra credit: Add interactivity
+  painty: 5.0,
+};
 
 let square: Square;
 
@@ -76,7 +77,15 @@ function main() {
   document.body.appendChild(stats.domElement);
 
   // Add controls to the gui
-  // const gui = new DAT.GUI();
+  const gui = new DAT.GUI();
+  //increase number of samples for motion blur
+  //increaase how painty the paint shader is
+
+  var paintControl = gui.add(controls, 'painty', 1, 10);
+  paintControl.onFinishChange(function() {
+    // Fires on every change, drag, keypress, etc.
+    renderer.setPaint(controls.painty);
+  });
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');

@@ -9,6 +9,7 @@ out vec4 out_Col;
 uniform sampler2D u_frame;
 uniform float u_Time;
 uniform vec2 u_Size;
+uniform int u_PaintSamples;
 
 const int radius = 5;
 
@@ -16,7 +17,7 @@ const int radius = 5;
 //found here: https://www.reddit.com/r/shaders/comments/5e7026/help_making_an_oil_paint_post_processing_shader/
 
 void main() {
-  float n = float (( radius + 1) * ( radius + 1));
+  float n = float (( u_PaintSamples + 1) * ( u_PaintSamples + 1));
   vec3 m [4];
   vec3 s [4];
   for (int k = 0; k < 4; ++ k) {
@@ -28,10 +29,10 @@ void main() {
   
   struct Window { int x1 , y1 , x2 , y2; };
   Window W[4] = Window [4](
-        Window ( -radius , -radius , 0, 0 ),
-        Window ( 0, -radius , radius , 0 ),
-        Window ( 0, 0, radius , radius ),
-        Window ( -radius , 0, 0, radius )
+        Window ( -u_PaintSamples , -u_PaintSamples , 0, 0 ),
+        Window ( 0, -u_PaintSamples , u_PaintSamples , 0 ),
+        Window ( 0, 0, u_PaintSamples , u_PaintSamples ),
+        Window ( -u_PaintSamples , 0, 0, u_PaintSamples )
   );
   for (int k = 0; k < 4; ++ k) {
        for (int j = W[k]. y1; j <= W[k].y2; ++ j) {

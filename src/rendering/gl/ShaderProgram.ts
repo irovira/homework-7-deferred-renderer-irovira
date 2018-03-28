@@ -37,6 +37,7 @@ class ShaderProgram {
   unifCameraPosition: WebGLUniformLocation;
   unifSize: WebGLUniformLocation;
   unifVPM: WebGLUniformLocation;
+  unifPaint: WebGLUniformLocation;
   // unifCameraUp: WebGLUniformLocation;
   // unifCameraLook: WebGLUniformLocation;
 
@@ -68,6 +69,7 @@ class ShaderProgram {
     this.unifCameraPosition = gl.getUniformLocation(this.prog, "u_CamPos");
     this.unifSize = gl.getUniformLocation(this.prog, "u_Size");
     this.unifVPM = gl.getUniformLocation(this.prog, "u_PrevVPM");
+    this.unifPaint = gl.getUniformLocation(this.prog, "u_PaintSamples");
     // this.unifCameraUp = gl.getUniformLocation(this.prog, "u_CameraUp");
     // this.unifCameraLook = gl.getUniformLocation(this.prog, "u_CameraLook");
 
@@ -152,6 +154,13 @@ class ShaderProgram {
     this.use();
     if (this.unifTime !== -1) {
       gl.uniform1f(this.unifTime, t);
+    }
+  }
+
+  setPaint(n: number) {
+    this.use();
+    if (this.unifTime !== -1) {
+      gl.uniform1i(this.unifPaint, n);
     }
   }
 

@@ -16,15 +16,15 @@ uniform sampler2D u_gb1;
 
 const int numSamples = 32;
 
+//based on : https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch27.html and
 
 
 void main() {
   // Get the initial color at this pixel.
-  vec2 blurVec = texture(u_gb1,fs_UV).xy;//vec2(-sin(u_Time*5.0), cos(u_Time*5.0));//texture(u_gb1,fs_UV).xy; //this is the problem area, how do i get gb1 to bind here? it's not clear to me...
+  vec2 blurVec = texture(u_gb1,fs_UV).xy;
   // perform blur:
    vec4 result = texture(u_frame, fs_UV);
    for (int i = 1; i < numSamples; ++i) {
-   // get offset in range [-0.5, 0.5]:
       vec2 offset = blurVec * (float(i) / float(numSamples - 1) - 0.5);
   
    // sample & add to result:

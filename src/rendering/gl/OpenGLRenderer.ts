@@ -69,6 +69,8 @@ class OpenGLRenderer {
     
     this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/motionblur-frag.glsl'))));
     this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/hatch-frag.glsl'))));
+
+    this.setPaint(5.0);
     
 
     // this.add32BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost3-frag.glsl'))));
@@ -200,6 +202,14 @@ class OpenGLRenderer {
     for (let pass of this.post8Passes) pass.setTime(currentTime);
     for (let pass of this.post32Passes) pass.setTime(currentTime);
     this.currentTime = currentTime;
+  }
+
+  setPaint(samples: number) {
+    this.post8Passes[2].setPaint(samples);
+    // this.deferredShader.setTime(currentTime);
+    // for (let pass of this.post8Passes) pass.setTime(currentTime);
+    // for (let pass of this.post32Passes) pass.setTime(currentTime);
+    // this.currentTime = currentTime;
   }
 
 
