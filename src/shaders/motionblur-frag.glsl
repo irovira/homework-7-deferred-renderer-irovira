@@ -16,7 +16,7 @@ uniform sampler2D u_gb1;
 
 const int numSamples = 32;
 
-//based on : https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch27.html and
+//based on : https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch27.html 
 
 
 void main() {

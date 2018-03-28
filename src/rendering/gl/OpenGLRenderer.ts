@@ -71,7 +71,7 @@ class OpenGLRenderer {
     this.post8PassesBool[0] = true;
     this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/motionblur-frag.glsl'))));
     this.post8PassesBool[1] = true;
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/hatch-frag.glsl'))));
+    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/paint-frag.glsl'))));
     this.post8PassesBool[2] = true;
 
 
